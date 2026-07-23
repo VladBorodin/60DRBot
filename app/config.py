@@ -9,10 +9,15 @@ class Settings(BaseSettings):
     Настройки приложения.
 
     Значения загружаются из переменных окружения
-    и из файла .env в корне проекта.
+    и файла .env в корне проекта.
     """
 
+    # Telegram
     bot_token: SecretStr
+    bot_proxy_url: str | None = None
+
+    # PostgreSQL
+    database_url: SecretStr
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -25,8 +30,10 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     """
-    Создаёт объект настроек один раз и затем
-    возвращает уже созданный экземпляр.
+    Возвращает единый объект настроек приложения.
+
+    Благодаря lru_cache файл .env читается только
+    при первом вызове функции.
     """
 
     return Settings()
